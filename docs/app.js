@@ -40,7 +40,12 @@ const Preview = (() => {
       return base && row.label===base.label && row.description===base.description && row.weight===(example.weights[row.id]||0);
     }) && ['horizon','risk_tolerance','non_negotiables'].every(k=>JSON.stringify(state.profile[k])===JSON.stringify(data.profile[k]));
     const profileExample=Object.keys(data.priority_examples).find(k=>matches(data.priority_examples[k]))||'custom';
-    const rationale=profileExample==='custom'?'Your priorities or constraints differ from the two prepared examples. This combined plan is a reference recommendation pending assessment against your brief; no tailored fit is claimed.':data.priority_examples[profileExample].rationale;
+    let rationale=profileExample==='custom'?'Your priorities or constraints differ from the two prepared examples. This combined plan is a reference recommendation pending assessment against your brief; no tailored fit is claimed.':data.priority_examples[profileExample].rationale;
+    if(state.selections.grading==='verify' && profileExample==='owner'){
+      rationale='Speed to value (35%) still matters, but your grading challenge makes a recoverability and staffing check the next step before trial approval. Credibility (25%) rules out committing on an unverified estimate. Strategy (30%) preserves the assets and booth option; reversibility (10%) limits the initial commitment. Once recovery and cover are credible, proceed with the bounded shadow trial.';
+    }else if(state.selections.grading==='verify' && profileExample==='reversible'){
+      rationale='Reversibility (60%) and your grading challenge both favour checking recoverability and staffing before authorising the trial. Speed carries 10%, so accept a short delay rather than commit on an unverified recovery estimate. Increasing speed would not resolve that evidence gap; a credible recovery estimate and staffing plan would reopen trial approval.';
+    }
     const branches=[];
     for(const item of data.insights){
       const action=state.selections[item.id];
